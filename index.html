@@ -1,84 +1,116 @@
-.html<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Animation</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #000;
-            font-family: Arial, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome Animation with Skip</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #000;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+    }
 
-        .logo-container {
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-            z-index: 2;
-            position: relative;
-        }
+    .logo-container {
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        z-index: 2;
+        position: relative;
+    }
 
-        .logo-container:hover {
-            transform: scale(1.1);
-        }
+    .logo-container:hover {
+        transform: scale(1.1);
+    }
 
-        .logo-container img {
-            width: 200px;
-            height: auto;
-        }
+    .logo-container img {
+        width: 200px;
+        height: auto;
+    }
 
-        .welcome-text {
-            margin-top: 20px;
-            font-size: 24px;
-            color: #fff;
-        }
+    .welcome-text {
+        margin-top: 20px;
+        font-size: 24px;
+        color: #fff;
+    }
 
-        video {
-            display: none;
-            width: 100%;
-            height: auto;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            background-color: #000;
-        }
-    </style>
+    video {
+        display: none;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        background-color: #000;
+        object-fit: cover;
+    }
+
+    #skipButton {
+        display: none;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 3;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    #skipButton:hover {
+        background-color: rgba(255, 255, 255, 1);
+    }
+</style>
 </head>
 <body>
 
-    <div class="logo-container" id="logoContainer">
-        <img src="https://github.com/etherneomdc3-IT/RAW/blob/main/wireless-wallet.png?raw=true" alt="Welcome Logo">
-        <div class="welcome-text">Click the Logo to Start</div>
-    </div>
+<div class="logo-container" id="logoContainer">
+    <img src="https://via.placeholder.com/200x200.png?text=Welcome+Logo" alt="Welcome Logo">
+    <div class="welcome-text">Click the Logo to Start</div>
+</div>
 
-    <video id="welcomeVideo" src="logo.mp4" type="video/mp4"></video>
+<video id="welcomeVideo" src="your-video.mp4" type="video/mp4"></video>
+<button id="skipButton">Skip</button>
 
-    <script>
-        const logoContainer = document.getElementById('logoContainer');
-        const video = document.getElementById('welcomeVideo');
+<script>
+    const logoContainer = document.getElementById('logoContainer');
+    const video = document.getElementById('welcomeVideo');
+    const skipButton = document.getElementById('skipButton');
+    const targetURL = "https://www.example.com"; // Replace with your URL
 
-        logoContainer.addEventListener('click', () => {
-            // Hide logo
-            logoContainer.style.display = 'none';
-            
-            // Show video and play
-            video.style.display = 'block';
-            video.play();
+    function redirect() {
+        window.location.href = targetURL;
+    }
 
-            // Redirect after video ends
-            video.addEventListener('ended', () => {
-                window.location.href = "home.html"; // Replace with your URL
-            });
-        });
-    </script>
+    logoContainer.addEventListener('click', () => {
+        // Hide logo
+        logoContainer.style.display = 'none';
+
+        // Show video and play
+        video.style.display = 'block';
+        video.play();
+
+        // Show skip button
+        skipButton.style.display = 'block';
+
+        // Redirect after video ends
+        video.addEventListener('ended', redirect);
+    });
+
+    // Skip button click
+    skipButton.addEventListener('click', redirect);
+</script>
 
 </body>
 </html>
