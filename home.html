@@ -1196,11 +1196,18 @@
   .pf-avatar-inner {
     width:80px;height:80px;border-radius:50%;
     background:#0d0d14;display:flex;align-items:center;justify-content:center;
-    font-size:40px;position:relative;overflow:hidden;
+    position:relative;overflow:hidden;
+    cursor:pointer;
+  }
+  .pf-avatar-inner img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
   }
   .pf-avatar-inner::after {
     content:'';position:absolute;inset:0;border-radius:50%;
     background:linear-gradient(135deg,rgba(224,64,251,.15),rgba(6,182,212,.1));
+    pointer-events:none;
   }
   .pf-status-dot {
     position:absolute;bottom:2px;right:2px;width:16px;height:16px;border-radius:50%;
@@ -1316,7 +1323,10 @@
       <img src="https://github.com/etherneomdc3-IT/RAW/blob/main/wireless-wallet.png?raw=true" style="width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(224,64,251,.5));" alt="Wireless Wallet"/>
       <span class="brand">Wireless Wallet</span>
     </div>
-    <div class="notif-btn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e040fb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="notif-dot"></div></div>
+    <div class="notif-btn" onclick="showNotifications()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e040fb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="notif-dot" id="notificationDot"></div>
+    </div>
   </nav>
   <div class="greeting"><div class="sub">👋 WELCOME BACK</div><div class="name">Don Jose Guardo Jr.</div></div>
   <!-- CARD FLIP WRAPPER — tap balance area to open wallet carousel starting from Wireless Wallet -->
@@ -1343,7 +1353,7 @@
         </div>
 
         <div class="card-label" style="margin-top:28px;">TOTAL BALANCE</div>
-        <div class="balance-amount">₱48,250.<span style="font-size:28px;opacity:.7">00</span><span class="signal-anim"><span></span><span></span><span></span><span></span></span></div>
+        <div class="balance-amount" id="mainBalance">₱48,250.<span style="font-size:28px;opacity:.7">00</span><span class="signal-anim"><span></span><span></span><span></span><span></span></span></div>
         <div style="margin-top:10px"><span class="balance-change"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>+2.4% this month</span></div>
         <div class="wave-line"><svg viewBox="0 0 400 30" preserveAspectRatio="none"><defs><linearGradient id="wg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#e040fb"/><stop offset="50%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs><path class="wave-path" d="M0,15 Q25,5 50,15 Q75,25 100,15 Q125,5 150,15 Q175,25 200,15 Q225,5 250,15 Q275,25 300,15 Q325,5 350,15 Q375,25 400,15 Q425,5 450,15 Q475,25 500,15 Q525,5 550,15 Q575,25 600,15 Q625,5 650,15 Q675,25 700,15 Q725,5 750,15 Q775,25 800,15" stroke="url(#wg)" stroke-width="2" fill="none"/></svg></div>
         <div class="card-bottom"><div class="card-tag">Card · <span id="cardNumMasked">•••• 4821</span></div><div class="signal-bars"><div></div><div></div><div></div><div></div></div></div>
@@ -1450,7 +1460,7 @@
     <div class="stat-card"><div class="stat-label">EXPENSES</div><div class="stat-val">₱14,500</div><div class="stat-trend" style="color:#f87171">↓ 3% vs last month</div></div>
   </div>
   <div class="section-title">Recent Transactions</div>
-  <div class="txn-list">
+  <div class="txn-list" id="transactionList">
     <div class="txn-item" style="animation-delay:.05s"><div class="txn-icon" style="background:linear-gradient(145deg,rgba(224,64,251,.2),rgba(124,58,237,.15));border:1px solid rgba(224,64,251,.3)">🛒</div><div class="txn-info"><div class="txn-name">Robinsons Supermarket</div><div class="txn-date">Mar 2, 2026 · 10:42 AM</div></div><div class="txn-amount debit">−₱1,240</div></div>
     <div class="txn-item" style="animation-delay:.1s"><div class="txn-icon" style="background:linear-gradient(145deg,rgba(6,182,212,.2),rgba(124,58,237,.1));border:1px solid rgba(6,182,212,.3)">💸</div><div class="txn-info"><div class="txn-name">Salary — March</div><div class="txn-date">Mar 1, 2026 · 9:00 AM</div></div><div class="txn-amount credit">+₱28,000</div></div>
     <div class="txn-item" style="animation-delay:.15s"><div class="txn-icon" style="background:linear-gradient(145deg,rgba(217,70,239,.2),rgba(124,58,237,.1));border:1px solid rgba(217,70,239,.3)">🍜</div><div class="txn-info"><div class="txn-name">Jollibee — Delivery</div><div class="txn-date">Feb 28, 2026 · 7:15 PM</div></div><div class="txn-amount debit">−₱385</div></div>
@@ -1642,13 +1652,15 @@
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ── State ──────────────────────────────────────────────
 let amountRaw = '';
 let timerInterval = null;
 let timerSecs = 300;
 let txnRef = '';
 let selMerchant = { name:'Robinsons Supermarket', icon:'🛒', id:'WW-MERCH-4829' };
+let notificationCount = 0;
+let mockFundsInterval = null;
 
 const MERCHANTS = {
   'Robinsons':    { name:'Robinsons Supermarket', icon:'🛒', id:'WW-MERCH-4829' },
@@ -1657,6 +1669,237 @@ const MERCHANTS = {
   'Mercury Drug': { name:'Mercury Drug',           icon:'💊', id:'WW-MERCH-5512' },
   'Grab':         { name:'Grab Philippines',       icon:'🚗', id:'WW-MERCH-9901' },
 };
+
+// Cache management
+const CACHE_KEY = 'wireless_wallet_cache';
+const PROFILE_KEY = 'wireless_wallet_profile';
+const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+
+function initCache() {
+  // Check if cache needs clearing
+  const lastCacheClear = localStorage.getItem('lastCacheClear');
+  const now = Date.now();
+  
+  if (!lastCacheClear || (now - parseInt(lastCacheClear)) > CACHE_EXPIRY) {
+    // Clear all cache except profile data
+    const profile = localStorage.getItem(PROFILE_KEY);
+    localStorage.clear();
+    if (profile) localStorage.setItem(PROFILE_KEY, profile);
+    localStorage.setItem('lastCacheClear', now.toString());
+  }
+  
+  // Initialize mock funds if not exists
+  if (!localStorage.getItem('totalBalance')) {
+    localStorage.setItem('totalBalance', '48250');
+  }
+  
+  // Initialize transaction history
+  if (!localStorage.getItem('transactions')) {
+    const initialTransactions = [
+      { name:'Robinsons Supermarket', amount:-1240, date:'Mar 2, 2026 · 10:42 AM', icon:'🛒' },
+      { name:'Salary — March', amount:28000, date:'Mar 1, 2026 · 9:00 AM', icon:'💸' },
+      { name:'Jollibee — Delivery', amount:-385, date:'Feb 28, 2026 · 7:15 PM', icon:'🍜' },
+      { name:'PLDT Fiber — Bill', amount:-1699, date:'Feb 27, 2026 · 2:00 PM', icon:'📡' },
+      { name:'Transfer from Maria', amount:3500, date:'Feb 26, 2026 · 11:30 AM', icon:'🔁' },
+      { name:'Mercury Drug', amount:-520, date:'Feb 25, 2026 · 3:45 PM', icon:'💊' }
+    ];
+    localStorage.setItem('transactions', JSON.stringify(initialTransactions));
+  }
+  
+  // Start mock funds interval
+  startMockFundsInterval();
+}
+
+function startMockFundsInterval() {
+  if (mockFundsInterval) clearInterval(mockFundsInterval);
+  
+  mockFundsInterval = setInterval(() => {
+    const amount = 5000; // ₱5,000
+    const sender = ['Maria Santos', 'Juan Dela Cruz', 'ABC Company', 'Friend', 'Family'][Math.floor(Math.random() * 5)];
+    const icon = ['💸', '💰', '💵', '💳', '🏦'][Math.floor(Math.random() * 5)];
+    
+    // Update balance
+    const currentBalance = parseFloat(localStorage.getItem('totalBalance') || '48250');
+    const newBalance = currentBalance + amount;
+    localStorage.setItem('totalBalance', newBalance.toString());
+    
+    // Add transaction
+    const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' }) + 
+                   ' · ' + now.toLocaleTimeString('en-PH', { hour:'2-digit', minute:'2-digit' });
+    
+    transactions.unshift({
+      name: `Received from ${sender}`,
+      amount: amount,
+      date: dateStr,
+      icon: icon
+    });
+    
+    // Keep only last 20 transactions
+    if (transactions.length > 20) transactions.pop();
+    
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+    
+    // Update UI
+    notificationCount++;
+    updateNotificationDot();
+    updateMainBalance();
+    updateTransactionList();
+    
+    // Show notification toast
+    showNotificationToast(`Received ₱5,000 from ${sender}`);
+    
+  }, 5 * 60 * 1000); // Every 5 minutes
+}
+
+function updateNotificationDot() {
+  const dot = document.getElementById('notificationDot');
+  if (dot) {
+    dot.style.display = notificationCount > 0 ? 'block' : 'none';
+  }
+}
+
+function showNotificationToast(message) {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #e040fb, #7c3aed);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(224,64,251,.3);
+    z-index: 1000;
+    animation: slideDown .3s cubic-bezier(0.2, 0.9, 0.3, 1);
+  `;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.animation = 'slideUp .3s cubic-bezier(0.2, 0.9, 0.3, 1) forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+function updateMainBalance() {
+  const balance = parseFloat(localStorage.getItem('totalBalance') || '48250');
+  const balanceEl = document.getElementById('mainBalance');
+  if (balanceEl) {
+    const parts = balance.toFixed(2).split('.');
+    balanceEl.innerHTML = `₱${parseInt(parts[0]).toLocaleString()}.<span style="font-size:28px;opacity:.7">${parts[1]}</span><span class="signal-anim"><span></span><span></span><span></span><span></span></span>`;
+  }
+}
+
+function updateTransactionList() {
+  const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+  const listEl = document.getElementById('transactionList');
+  if (!listEl) return;
+  
+  listEl.innerHTML = transactions.map((txn, i) => `
+    <div class="txn-item" style="animation-delay:${i*0.05}s">
+      <div class="txn-icon" style="background:linear-gradient(145deg,rgba(224,64,251,.2),rgba(124,58,237,.15));border:1px solid rgba(224,64,251,.3)">${txn.icon}</div>
+      <div class="txn-info">
+        <div class="txn-name">${txn.name}</div>
+        <div class="txn-date">${txn.date}</div>
+      </div>
+      <div class="txn-amount ${txn.amount > 0 ? 'credit' : 'debit'}">${txn.amount > 0 ? '+' : ''}₱${Math.abs(txn.amount).toLocaleString()}</div>
+    </div>
+  `).join('');
+}
+
+function showNotifications() {
+  notificationCount = 0;
+  updateNotificationDot();
+  
+  // Show notification modal with received funds
+  const notifications = JSON.parse(localStorage.getItem('transactions') || '[]')
+    .filter(txn => txn.name.includes('Received from'))
+    .slice(0, 5);
+  
+  if (notifications.length > 0) {
+    let message = 'Recent received funds:\n\n';
+    notifications.forEach(txn => {
+      message += `• ${txn.name}: ₱5,000\n  ${txn.date}\n\n`;
+    });
+    alert(message);
+  } else {
+    alert('No new notifications');
+  }
+}
+
+// Profile management
+function initProfile() {
+  const savedProfile = localStorage.getItem(PROFILE_KEY);
+  if (savedProfile) {
+    try {
+      const profile = JSON.parse(savedProfile);
+      updateProfileUI(profile);
+    } catch (e) {
+      console.error('Failed to parse profile', e);
+    }
+  }
+}
+
+function updateProfileUI(profile) {
+  const avatarImg = document.getElementById('profileAvatar');
+  if (avatarImg && profile.avatar) {
+    avatarImg.src = profile.avatar;
+  }
+  if (profile.name) {
+    document.querySelector('.pf-full-name').innerHTML = `Don Jose <em>${profile.name.split(' ').slice(1).join(' ')}</em>`;
+  }
+}
+
+function changeProfilePicture() {
+  const methods = [
+    { text: '📷 Take Photo', action: 'camera' },
+    { text: '📁 Choose from Gallery', action: 'gallery' },
+    { text: '🔗 Enter URL', action: 'url' },
+    { text: '❌ Cancel', action: 'cancel' }
+  ];
+  
+  const method = prompt('Choose method:\n1. Take Photo\n2. Choose from Gallery\n3. Enter URL\n4. Cancel');
+  
+  if (method === '1') {
+    // Simulate camera capture
+    const imgUrl = prompt('Camera not available in demo.\nEnter image URL (press Enter to use default):');
+    if (imgUrl) {
+      saveProfileImage(imgUrl);
+    } else {
+      saveProfileImage('https://github.com/etherneomdc3-IT/RAW/blob/main/profile.png?raw=true');
+    }
+  } else if (method === '2') {
+    // Simulate gallery selection
+    const imgUrl = prompt('Gallery not available in demo.\nEnter image URL (press Enter to use default):');
+    if (imgUrl) {
+      saveProfileImage(imgUrl);
+    } else {
+      saveProfileImage('https://github.com/etherneomdc3-IT/RAW/blob/main/profile.png?raw=true');
+    }
+  } else if (method === '3') {
+    const imgUrl = prompt('Enter image URL:');
+    if (imgUrl && imgUrl.trim()) {
+      saveProfileImage(imgUrl.trim());
+    }
+  }
+}
+
+function saveProfileImage(url) {
+  const profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}');
+  profile.avatar = url;
+  profile.name = profile.name || 'Don Jose Guardo Jr.';
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  
+  const avatarImg = document.getElementById('profileAvatar');
+  if (avatarImg) {
+    avatarImg.src = url;
+  }
+}
 
 // ── Modal ──────────────────────────────────────────────
 function openPayModal() {
@@ -3178,6 +3421,28 @@ function stObserveFades() {
   els.forEach(el=>{ el.classList.remove('vis'); obs.observe(el); });
 }
 
+// Initialize on load
+window.addEventListener('load', () => {
+  initCache();
+  initProfile();
+  updateMainBalance();
+  updateTransactionList();
+  
+  // Add slide animation keyframes
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideDown {
+      from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateX(-50%) translateY(0); opacity: 1; }
+      to { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(style);
+});
+
 </script>
 <!-- ===== AI FINANCIAL ADVISER MODAL ===== -->
 <div class="ai-modal-overlay" id="aiModal" onclick="handleAIOverlay(event)">
@@ -3645,7 +3910,7 @@ function stObserveFades() {
           </div>
           <div class="vc-row" style="margin-top:8px;">
             <div><div class="vc-lbl">Account Name</div><div class="vc-name" style="font-size:11px;background:linear-gradient(90deg,#e040fb,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">DON JOSE GUARDO JR.</div></div>
-            <div style="text-align:right;"><div class="vc-lbl">Balance</div><div style="font-size:18px;font-weight:100;background:linear-gradient(90deg,#e040fb,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-variant-numeric:tabular-nums;">₱48,250</div></div>
+            <div style="text-align:right;"><div class="vc-lbl">Balance</div><div style="font-size:18px;font-weight:100;background:linear-gradient(90deg,#e040fb,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-variant-numeric:tabular-nums;" id="walletCardBalance">₱48,250</div></div>
           </div>
         </div>
       </div>
@@ -4094,7 +4359,9 @@ function stObserveFades() {
         <div class="pf-top-row">
           <div style="position:relative;flex-shrink:0;">
             <div class="pf-avatar-ring">
-              <div class="pf-avatar-inner">👨‍💼</div>
+              <div class="pf-avatar-inner" onclick="changeProfilePicture()">
+                <img id="profileAvatar" src="https://github.com/etherneomdc3-IT/RAW/blob/main/profile.png?raw=true" alt="Profile" style="display:block;">
+              </div>
             </div>
             <div class="pf-status-dot"></div>
           </div>
@@ -4151,7 +4418,7 @@ function stObserveFades() {
       ────────────────────────────── -->
       <div class="pf-stats">
         <div class="pf-stat-tile">
-          <div class="pf-stat-num" style="background:linear-gradient(135deg,#e040fb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">₱48k</div>
+          <div class="pf-stat-num" style="background:linear-gradient(135deg,#e040fb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="profileBalance">₱48k</div>
           <div class="pf-stat-tag">Balance</div>
         </div>
         <div class="pf-stat-tile">
@@ -4159,7 +4426,7 @@ function stObserveFades() {
           <div class="pf-stat-tag">Cards</div>
         </div>
         <div class="pf-stat-tile">
-          <div class="pf-stat-num" style="color:#4ade80;">₱32k</div>
+          <div class="pf-stat-num" style="color:#4ade80;" id="profileIncome">₱32k</div>
           <div class="pf-stat-tag">Income</div>
         </div>
       </div>
