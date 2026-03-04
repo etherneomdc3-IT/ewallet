@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Welcome Animation with Skip</title>
+
 <style>
     body, html {
         margin: 0;
@@ -21,7 +22,7 @@
     .logo-container {
         text-align: center;
         cursor: pointer;
-        transition: transform 0.3s ease;
+        transition: transform 0.3s ease, opacity 0.4s ease;
         z-index: 2;
         position: relative;
     }
@@ -73,42 +74,47 @@
     }
 </style>
 </head>
+
 <body>
 
 <div class="logo-container" id="logoContainer">
-    <img src="https://via.placeholder.com/200x200.png?text=Welcome+Logo" alt="Welcome Logo">
+    <img src="https://github.com/etherneomdc3-IT/RAW/blob/main/wireless-wallet.png?raw=true" alt="Welcome Logo">
     <div class="welcome-text">Click the Logo to Start</div>
 </div>
 
-<video id="welcomeVideo" src="logo.mp4" type="video/mp4"></video>
+<video id="welcomeVideo" src="logo.mp4"></video>
 <button id="skipButton">Skip</button>
 
 <script>
     const logoContainer = document.getElementById('logoContainer');
     const video = document.getElementById('welcomeVideo');
     const skipButton = document.getElementById('skipButton');
-    const targetURL = "home.html"; // Replace with your URL
+    const targetURL = "home.html";
+
+    // ✅ If animation already played, skip instantly
+    if (sessionStorage.getItem("welcomePlayed") === "true") {
+        window.location.replace(targetURL);
+    }
 
     function redirect() {
-        window.location.href = targetURL;
+        sessionStorage.setItem("welcomePlayed", "true");
+        window.location.replace(targetURL);
     }
 
     logoContainer.addEventListener('click', () => {
-        // Hide logo
-        logoContainer.style.display = 'none';
+        logoContainer.style.opacity = "0";
+        setTimeout(() => {
+            logoContainer.style.display = "none";
+        }, 400);
 
-        // Show video and play
         video.style.display = 'block';
-        video.play();
-
-        // Show skip button
         skipButton.style.display = 'block';
 
-        // Redirect after video ends
+        video.play();
+
         video.addEventListener('ended', redirect);
     });
 
-    // Skip button click
     skipButton.addEventListener('click', redirect);
 </script>
 
