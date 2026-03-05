@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Screen</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      width: 100%;
+      max-width: 360px;
+      padding: 0 20px;
+    }
+
+    .logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0 40px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border: 2px solid #555;
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+
+    .dot.filled {
+      background: #fff;
+      border-color: #fff;
+    }
+
+    .keyboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    .key {
+      width: 80px;
+      height: 80px;
+      background: #111;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 300;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .key:hover {
+      background: #222;
+    }
+
+    .key.clear {
+      font-size: 28px;
+    }
+
+    .key.confirm {
+      background: #0066ff;
+      font-size: 28px;
+    }
+
+    .key.confirm:hover {
+      background: #0055dd;
+    }
+
+    .fingerprint-area {
+      margin: 60px 0 20px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .fingerprint {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 12px;
+    }
+
+    .fingerprint img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: brightness(0) invert(1); /* makes it white */
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: scale(0.95); }
+      50%      { opacity: 1;   transform: scale(1.08); }
+    }
+
+    .status-text {
+      font-size: 16px;
+      color: #888;
+      margin-top: 8px;
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.94);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .loading-spinner {
+      width: 80px;
+      height: 80px;
+      border: 5px solid #333;
+      border-top: 5px solid #0066ff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 24px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 20px;
+    }
+
+    /* Error shake */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+      20%, 40%, 60%, 80% { transform: translateX(8px); }
+    }
+
+    .shake {
+      animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo">
+    <img src="https://github.com/etherneomdc3-IT/RAW/raw/main/wireless-wallet.png" alt="Wireless Wallet Logo">
+  </div>
+
+  <div class="dots" id="pinDots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+
+  <div class="keyboard" id="keyboard">
+    <div class="key">1</div>
+    <div class="key">2</div>
+    <div class="key">3</div>
+
+    <div class="key">4</div>
+    <div class="key">5</div>
+    <div class="key">6</div>
+
+    <div class="key">7</div>
+    <div class="key">8</div>
+    <div class="key">9</div>
+
+    <div class="key clear">×</div>
+    <div class="key">0</div>
+    <div class="key confirm">✓</div>
+  </div>
+
+  <div class="fingerprint-area" id="fingerprintArea">
+    <div class="fingerprint">
+      <img src="https://github.com/etherneomdc3-IT/RAW/raw/main/finger%20print.png" alt="Fingerprint">
+    </div>
+    <div class="status-text">Touch to Login</div>
+  </div>
+</div>
+
+<!-- Loading screen -->
+<div class="loading-overlay" id="loadingScreen">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Verifying...</div>
+</div>
+
+<script>
+  const pinDots = document.querySelectorAll('#pinDots .dot');
+  const keys = document.querySelectorAll('.key');
+  const loadingScreen = document.getElementById('loadingScreen');
+  const container = document.querySelector('.container');
+  const fingerprintArea = document.getElementById('fingerprintArea');
+
+  let enteredPin = '';
+  const correctPin = '888967';
+
+  // Keypad input
+  keys.forEach(key => {
+    key.addEventListener('click', () => {
+      const val = key.textContent.trim();
+
+      if (val === '×') {
+        enteredPin = '';
+      } else if (val === '✓') {
+        checkPin();
+        return;
+      } else if (!isNaN(val) && enteredPin.length < 6) {
+        enteredPin += val;
+      }
+
+      updateDots();
+
+      if (enteredPin.length === 6) {
+        setTimeout(checkPin, 400);
+      }
+    });
+  });
+
+  // Fingerprint touch → 3 second animation + success
+  fingerprintArea.addEventListener('click', () => {
+    showLoading();
+    setTimeout(() => {
+      // Simulate successful fingerprint → redirect
+      window.location.href = "https://example.com/dashboard"; 
+      // ← Replace this with your actual success URL
+    }, 3000);
+  });
+
+  function updateDots() {
+    pinDots.forEach((dot, i) => {
+      dot.classList.toggle('filled', i < enteredPin.length);
+    });
+    container.classList.remove('shake');
+  }
+
+  function checkPin() {
+    if (enteredPin === correctPin) {
+      showLoading();
+      setTimeout(() => {
+        window.location.href = "home.html"; 
+        // ← Replace with your real success page URL
+      }, 1800);
+    } else {
+      container.classList.add('shake');
+      setTimeout(() => container.classList.remove('shake'), 600);
+      enteredPin = '';
+      updateDots();
+    }
+  }
+
+  function showLoading() {
+    loadingScreen.style.display = 'flex';
+  }
+
+  // Optional: desktop keyboard support
+  document.addEventListener('keydown', e => {
+    if (e.key >= '0' && e.key <= '9' && enteredPin.length < 6) {
+      enteredPin += e.key;
+      updateDots();
+      if (enteredPin.length === 6) setTimeout(checkPin, 400);
+    } else if (e.key === 'Backspace') {
+      enteredPin = enteredPin.slice(0, -1);
+      updateDots();
+    } else if (e.key === 'Enter') {
+      checkPin();
+    }
+  });
+</script>
+
+</body>
+</html>
