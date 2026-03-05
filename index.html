@@ -1,322 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login Screen</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome</title>
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #000;
-      color: #fff;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
+<style>
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
 
-    .container {
-      text-align: center;
-      width: 100%;
-      max-width: 360px;
-      padding: 0 20px;
-    }
+.logo-container {
+    text-align: center;
+    cursor: pointer;
+    transition: opacity 0.4s ease;
+}
 
-    .logo {
-      width: 120px;
-      height: 120px;
-      background: #222;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 40px;
-      font-size: 24px;
-      font-weight: bold;
-      color: #888;
-    }
+.logo-container img {
+    width: 200px;
+}
 
-    .dots {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 20px 0 40px;
-    }
+.welcome-text {
+    color: white;
+    margin-top: 15px;
+    font-size: 22px;
+}
 
-    .dot {
-      width: 12px;
-      height: 12px;
-      border: 2px solid #555;
-      border-radius: 50%;
-      transition: all 0.3s;
-    }
+video {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-    .dot.filled {
-      background: #fff;
-      border-color: #fff;
-    }
-
-    .keyboard {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      max-width: 280px;
-      margin: 0 auto;
-    }
-
-    .key {
-      width: 80px;
-      height: 80px;
-      background: #111;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      font-weight: 300;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.2s;
-    }
-
-    .key:hover {
-      background: #222;
-    }
-
-    .key.clear {
-      font-size: 28px;
-    }
-
-    .key.confirm {
-      background: #0066ff;
-      font-size: 28px;
-    }
-
-    .key.confirm:hover {
-      background: #0055dd;
-    }
-
-    .fingerprint-area {
-      margin: 60px 0 20px;
-      text-align: center;
-    }
-
-    .fingerprint {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 12px;
-    }
-
-    .fingerprint img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.4; transform: scale(0.9); }
-      50%      { opacity: 1;   transform: scale(1.1); }
-    }
-
-    .status-text {
-      font-size: 16px;
-      color: #888;
-      margin-top: 8px;
-    }
-
-    /* Fingerprint loading overlay */
-    .loading-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.92);
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .loading-spinner {
-      width: 90px;
-      height: 90px;
-      border: 5px solid #333;
-      border-top: 5px solid #0066ff;
-      border-radius: 50%;
-      animation: spin 1.2s linear infinite;
-      margin-bottom: 30px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      font-size: 20px;
-      margin-bottom: 10px;
-    }
-
-    /* Shake animation for error */
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-      20%, 40%, 60%, 80% { transform: translateX(10px); }
-    }
-
-    .shake {
-      animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
-    }
-  </style>
+#skipButton {
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-  <div class="logo">LOGO</div>
-
-  <div class="dots" id="pinDots">
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-  </div>
-
-  <div class="keyboard" id="keyboard">
-    <div class="key">1</div>
-    <div class="key">2</div>
-    <div class="key">3</div>
-    <div class="key">4</div>
-    <div class="key">5</div>
-    <div class="key">6</div>
-    <div class="key">7</div>
-    <div class="key">8</div>
-    <div class="key">9</div>
-    <div class="key clear">×</div>
-    <div class="key">0</div>
-    <div class="key confirm">✓</div>
-  </div>
-
-  <div class="fingerprint-area">
-    <div class="fingerprint">
-      <!-- Replace with your actual fingerprint.png path -->
-      <img src="fingerprint.png" alt="Fingerprint">
-    </div>
-    <div class="status-text">Touch to Login</div>
-  </div>
+<div class="logo-container" id="logoContainer">
+    <img src="https://github.com/etherneomdc3-IT/RAW/blob/main/wireless-wallet.png?raw=true">
+    <div class="welcome-text">Click Logo to Start</div>
 </div>
 
-<!-- Loading overlay after fingerprint touch -->
-<div class="loading-overlay" id="loadingScreen">
-  <div class="loading-spinner"></div>
-  <div class="loading-text">Verifying...</div>
-</div>
+<video id="welcomeVideo">
+    <source src="logo.mp4" type="video/mp4">
+</video>
+
+<button id="skipButton">Skip</button>
 
 <script>
-  const pinDots = document.querySelectorAll('#pinDots .dot');
-  const keys = document.querySelectorAll('.key');
-  const loadingScreen = document.getElementById('loadingScreen');
-  const container = document.querySelector('.container');
+const logo = document.getElementById("logoContainer");
+const video = document.getElementById("welcomeVideo");
+const skip = document.getElementById("skipButton");
 
-  let enteredPin = '';
+// redirect function
+function goHome() {
+    window.location.href = "home.html";
+}
 
-  const correctPin = '888967';
+// when logo clicked
+logo.addEventListener("click", function() {
 
-  keys.forEach(key => {
-    key.addEventListener('click', () => {
-      const value = key.textContent.trim();
+    logo.style.opacity = "0";
 
-      if (value === '×') {
-        enteredPin = '';
-        updateDots();
-      } 
-      else if (value === '✓') {
-        checkPin();
-      } 
-      else if (enteredPin.length < 6 && !isNaN(value)) {
-        enteredPin += value;
-        updateDots();
-        
-        // Auto-check when 6 digits are entered
-        if (enteredPin.length === 6) {
-          setTimeout(checkPin, 300);
-        }
-      }
-    });
-  });
-
-  // Fingerprint touch simulation (click or tap the fingerprint area)
-  document.querySelector('.fingerprint-area').addEventListener('click', () => {
-    showLoading();
     setTimeout(() => {
-      hideLoading();
-      // You can decide what happens after fingerprint "success"
-      // For now we just simulate → go to success
-      // window.location.href = "https://example.com/dashboard";
-      alert("Fingerprint recognized!\n(redirect simulation)");
-    }, 3000);
-  });
+        logo.style.display = "none";
+        video.style.display = "block";
+        skip.style.display = "block";
+        video.play();
+    }, 400);
 
-  function updateDots() {
-    pinDots.forEach((dot, i) => {
-      dot.classList.toggle('filled', i < enteredPin.length);
-    });
+});
 
-    // Remove shake class if exists
-    container.classList.remove('shake');
-  }
+// auto redirect when video ends
+video.onended = goHome;
 
-  function checkPin() {
-    if (enteredPin === correctPin) {
-      showLoading();
-      setTimeout(() => {
-        // ------------------ SUCCESS REDIRECT ------------------
-        window.location.href = "https://ewallet-nine.vercel.app/; 
-        // Replace with your actual success page URL
-      }, 1800);
-    } else {
-      container.classList.add('shake');
-      setTimeout(() => {
-        container.classList.remove('shake');
-      }, 700);
-
-      enteredPin = '';
-      updateDots();
-    }
-  }
-
-  function showLoading() {
-    loadingScreen.style.display = 'flex';
-  }
-
-  function hideLoading() {
-    loadingScreen.style.display = 'none';
-  }
-
-  // Optional: allow keyboard input on desktop for testing
-  document.addEventListener('keydown', e => {
-    if (e.key >= '0' && e.key <= '9') {
-      if (enteredPin.length < 6) {
-        enteredPin += e.key;
-        updateDots();
-        if (enteredPin.length === 6) setTimeout(checkPin, 300);
-      }
-    } else if (e.key === 'Backspace') {
-      enteredPin = enteredPin.slice(0, -1);
-      updateDots();
-    } else if (e.key === 'Enter') {
-      checkPin();
-    }
-  });
+// skip button
+skip.onclick = goHome;
 </script>
 
 </body>
